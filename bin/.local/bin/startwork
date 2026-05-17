@@ -1,18 +1,10 @@
 #!/usr/bin/env bash
 # startwork — spin up all project sessions and attach
 
-declare -A sessions=(
-    ["toastyvault"]="$HOME/work/toastystation/toasty-vault"
-    ["bunker"]="$HOME/work/fulflld/fulflld-bunker"
-    ["notes"]="$HOME/work/notes"
-)
-
-declare -a order=("toastyvault" "bunker" "notes")
-
-for name in "${order[@]}"; do
-    path="${sessions[$name]}"
+setup_session() {
+    local name="$1"
+    local path="$2"
     mkdir -p "$path"
-
     if ! tmux has-session -t="$name" 2>/dev/null; then
         tmux new-session -ds "$name" -c "$path"
         tmux rename-window -t "$name:1" "nvim"
@@ -20,7 +12,11 @@ for name in "${order[@]}"; do
         tmux new-window -t "$name" -n "claude" -c "$path"
         tmux select-window -t "$name:1"
     fi
-done
+}
+
+setup_session "toastyvault" "$HOME/work/toastystation/toasty-vault"
+setup_session "bunker" "$HOME/work/fulflld/fulflld-bunker"
+setup_session "notes" "$HOME/work/notes"
 
 if [[ -z $TMUX ]]; then
     tmux attach-session -t toastyvault
