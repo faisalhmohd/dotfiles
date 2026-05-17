@@ -16,7 +16,13 @@ setup_session() {
 
 setup_session "toastyvault" "$HOME/work/toastystation/toasty-vault"
 setup_session "bunker" "$HOME/work/fulflld/fulflld-bunker"
-setup_session "notes" "$HOME/work/notes"
+VAULT="/Volumes/mediahdd/AppData/obsidian/config/Obsidian Vault"
+if [[ -d "$VAULT" ]]; then
+    setup_session "notes" "$VAULT"
+else
+    echo "Warning: Obsidian vault not mounted, using ~/work/notes instead"
+    setup_session "notes" "$HOME/work/notes"
+fi
 
 if [[ -z $TMUX ]]; then
     tmux attach-session -t toastyvault
