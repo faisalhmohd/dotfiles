@@ -3,6 +3,9 @@ return {
     version = "*",
     lazy = true,
     ft = "markdown",
+    cond = function()
+        return vim.fn.isdirectory("/Volumes/mediahdd/AppData/obsidian/config/Obsidian Vault") == 1
+    end,
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {
         workspaces = {
