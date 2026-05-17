@@ -36,6 +36,9 @@ return {
         end,
         ui = { enable = true },
     },
+    init = function()
+        vim.opt.conceallevel = 2
+    },
     keys = {
         { "<leader>on", "<cmd>ObsidianNew<cr>",          desc = "New note" },
         { "<leader>oo", "<cmd>ObsidianOpen<cr>",         desc = "Open in Obsidian app" },
