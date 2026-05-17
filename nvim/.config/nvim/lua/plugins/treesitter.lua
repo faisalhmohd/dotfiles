@@ -8,7 +8,6 @@ return {
             "go", "bash", "json", "yaml", "css", "html",
         })
 
-        -- enable treesitter highlight per filetype
         vim.api.nvim_create_autocmd("FileType", {
             callback = function()
                 pcall(vim.treesitter.start)
