@@ -1,31 +1,35 @@
 #!/usr/bin/env bash
-# startwork — spin up all project sessions and attach
+# startwork — single session, one window per project
 
-setup_session() {
-    local name="$1"
-    local path="$2"
+VAULT="/Volumes/mediahdd/AppData/obsidian/config/Obsidian Vault"
+[[ ! -d "$VAULT" ]] && VAULT="$HOME/work/notes"
+
+setup_window() {
+    local session="$1"
+    local winname="$2"
+    local path="$3"
     mkdir -p "$path"
-    if ! tmux has-session -t="$name" 2>/dev/null; then
-        tmux new-session -ds "$name" -c "$path"
-        tmux rename-window -t "$name:1" "nvim"
-        tmux new-window -t "$name" -n "server" -c "$path"
-        tmux new-window -t "$name" -n "claude" -c "$path"
-        tmux select-window -t "$name:1"
-    fi
+    local win
+    win=$(tmux new-window -t "$session" -n "$winname" -c "$path" -P -F "#{window_index}")
+    tmux split-window -t "$session:$win" -h -p 30 -c "$path"
+    tmux split-window -t "$session:$win.2" -v -p 50 -c "$path"
+    tmux select-pane -t "$session:$win.1"
 }
 
-setup_session "toastyvault" "$HOME/work/toastystation/toasty-vault"
-setup_session "bunker" "$HOME/work/fulflld/fulflld-bunker"
-VAULT="/Volumes/mediahdd/AppData/obsidian/config/Obsidian Vault"
-if [[ -d "$VAULT" ]]; then
-    setup_session "notes" "$VAULT"
-else
-    echo "Warning: Obsidian vault not mounted, using ~/work/notes instead"
-    setup_session "notes" "$HOME/work/notes"
+if ! tmux has-session -t=work 2>/dev/null; then
+    tmux new-session -ds work -n tv -c "$HOME/work/toastystation/toasty-vault"
+    tmux split-window -t work:1 -h -p 30 -c "$HOME/work/toastystation/toasty-vault"
+    tmux split-window -t work:1.2 -v -p 50 -c "$HOME/work/toastystation/toasty-vault"
+    tmux select-pane -t work:1.1
+
+    setup_window work fulflld "$HOME/work/fulflld/fulflld-bunker"
+    setup_window work notes "$HOME/work/notes"
+
+    tmux select-window -t work:1
 fi
 
 if [[ -z $TMUX ]]; then
-    tmux attach-session -t toastyvault
+    tmux attach-session -t work
 else
-    tmux switch-client -t toastyvault
+    tmux switch-client -t work
 fi

@@ -48,5 +48,7 @@ return {
         { "<leader>ot", "<cmd>ObsidianToday<cr>",        desc = "Today's daily note" },
         { "<leader>ol", "<cmd>ObsidianLinks<cr>",        desc = "Links in note" },
         { "<leader>oT", "<cmd>ObsidianTags<cr>",         desc = "Browse tags" },
+        { "<leader><left>",  "<cmd>ObsidianYesterday<cr>", desc = "Yesterday's note" },
+        { "<leader><right>", "<cmd>ObsidianTomorrow<cr>",  desc = "Tomorrow's note" },
     },
 }

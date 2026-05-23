@@ -19,3 +19,13 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup("plugins")
+
+-- messages in scratch buffer
+vim.keymap.set("n", "<leader>m", function()
+    vim.cmd("new | put =execute('messages') | setlocal buftype=nofile nobuflisted")
+end, { desc = "Messages buffer" })
+
+-- insert today's date
+vim.keymap.set("i", "<C-d>", function()
+    return os.date("%Y-%m-%d %H:%M")
+end, { expr = true })
