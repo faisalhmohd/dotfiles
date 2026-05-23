@@ -16,9 +16,10 @@ check() {
 }
 
 echo "Checking requirements..."
-check stow   "brew install stow"
-check nvim   "brew install neovim"
-check tmux   "brew install tmux"
+check stow    "brew install stow"
+check nvim    "brew install neovim"
+check tmux    "brew install tmux"
+check ghostty "brew install --cask ghostty"
 check fd     "brew install fd"
 check fzf          "brew install fzf"
 check git          "brew install git"
@@ -37,7 +38,7 @@ fi
 
 echo ""
 echo "Stowing configs from $DOTFILES..."
-stow -d "$DOTFILES" -t "$HOME" tmux nvim bin
+stow -d "$DOTFILES" -t "$HOME" tmux nvim bin ghostty
 
 chmod +x "$HOME/.local/bin/tmux-sessionizer"
 
