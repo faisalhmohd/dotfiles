@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Read notification JSON from Claude hook stdin
+input=$(cat)
+message=$(echo "$input" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('message',''))" 2>/dev/null)
+cwd=$(echo "$input" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('cwd',''))" 2>/dev/null)
+[ -z "$message" ] && message="Claude needs your attention"
+
+project=$(basename "$cwd")
+
+# Determine tmux pane target, socket, client, and window name at hook-fire time
+if [ -n "$TMUX_PANE" ] && command -v tmux &>/dev/null; then
+    target=$(tmux display-message -p -t "$TMUX_PANE" '#S:#I.#P' 2>/dev/null)
+    tmux_socket=$(echo "$TMUX" | cut -d, -f1)
+    tmux_client=$(tmux display-message -p '#{client_name}' 2>/dev/null)
+    window_name=$(tmux display-message -p -t "$TMUX_PANE" '#W' 2>/dev/null)
+fi
+
+title="Claude · ${window_name:-$project}"
+subtitle="$project"
+
+if command -v terminal-notifier &>/dev/null; then
+    if [ -n "$target" ] && [ -n "$tmux_socket" ] && [ -n "$tmux_client" ]; then
+        execute_cmd="osascript -e 'tell application \"Ghostty\" to activate'; tmux -S '${tmux_socket}' switch-client -c '${tmux_client}' -t '${target}'"
+        terminal-notifier \
+            -title "$title" \
+            -subtitle "$subtitle" \
+            -message "$message" \
+            -sound "Glass" \
+            -execute "$execute_cmd" \
+            2>/dev/null
+    else
+        terminal-notifier \
+            -title "$title" \
+            -subtitle "$subtitle" \
+            -message "$message" \
+            -sound "Glass" \
+            2>/dev/null
+    fi
+else
+    osascript -e "display notification \"$message\" with title \"$title\" subtitle \"$subtitle\" sound name \"Glass\""
+fi

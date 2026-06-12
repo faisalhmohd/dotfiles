@@ -26,6 +26,7 @@ check git          "brew install git"
 check node         "brew install node"
 check npm          "brew install node"
 check tree-sitter  "npm i -g tree-sitter-cli"
+check terminal-notifier "brew install terminal-notifier"
 
 if [ ${#MISSING[@]} -gt 0 ]; then
     echo ""
@@ -41,5 +42,6 @@ echo "Stowing configs from $DOTFILES..."
 stow -d "$DOTFILES" -t "$HOME" tmux nvim bin ghostty
 
 chmod +x "$HOME/.local/bin/tmux-sessionizer"
+chmod +x "$HOME/.local/bin/claude-tmux-notify"
 
 echo "Done. Start a new tmux session to apply changes."
