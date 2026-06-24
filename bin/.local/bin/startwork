@@ -11,15 +11,15 @@ setup_window() {
     mkdir -p "$path"
     local win
     win=$(tmux new-window -t "$session" -n "$winname" -c "$path" -P -F "#{window_index}")
-    tmux split-window -t "$session:$win" -h -p 30 -c "$path"
-    tmux split-window -t "$session:$win.2" -v -p 50 -c "$path"
+    tmux split-window -t "$session:$win" -h -l 30% -c "$path"
+    tmux split-window -t "$session:$win.2" -v -l 50% -c "$path"
     tmux select-pane -t "$session:$win.1"
 }
 
 if ! tmux has-session -t=work 2>/dev/null; then
     tmux new-session -ds work -n tv -c "$HOME/work/toastystation/toasty-vault"
-    tmux split-window -t work:1 -h -p 30 -c "$HOME/work/toastystation/toasty-vault"
-    tmux split-window -t work:1.2 -v -p 50 -c "$HOME/work/toastystation/toasty-vault"
+    tmux split-window -t work:1 -h -l 30% -c "$HOME/work/toastystation/toasty-vault"
+    tmux split-window -t work:1.2 -v -l 50% -c "$HOME/work/toastystation/toasty-vault"
     tmux select-pane -t work:1.1
 
     setup_window work fulflld "$HOME/work/fulflld/fulflld-bunker"
